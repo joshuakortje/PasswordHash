@@ -28,6 +28,7 @@ public class PasswordHashes {
             stringBuffer.append(String.format("%02x", bytes & 0xff));
         }
         
+        
         System.out.println(stringBuffer.toString());
     }
     
