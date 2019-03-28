@@ -21,15 +21,22 @@ public class PasswordHashes {
         // TODO code application logic here
         String data = "mean";
         MessageDigest md = MessageDigest.getInstance("MD5");
-        md.update(data.getBytes());
+        
+        String test = hash(data, md);
+        
+        System.out.println(data);
+    }
+    
+    //this method takes the hash of a word passed in
+    public static String hash(String pass, MessageDigest md){
+        md.update(pass.getBytes());
         byte[] testing1 = md.digest();
         StringBuffer stringBuffer = new StringBuffer();
         for (byte bytes : testing1) {
             stringBuffer.append(String.format("%02x", bytes & 0xff));
         }
         
-        
-        System.out.println(stringBuffer.toString());
+        return stringBuffer.toString();
     }
     
 }
