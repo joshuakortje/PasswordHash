@@ -57,8 +57,8 @@ public class PasswordHashes {
                 //call function to do the actual hashing and checking
                 checkHashes(nextWord, md);
                 count = count + 1; //keep track of hashes
-                if((count % 1000) == 0){
-                    System.out.println(count);
+                if((count % 10000) == 0){
+                    System.out.println("Hashes computed: " + count);
                 }
             }
         } catch (FileNotFoundException ex) {
@@ -68,6 +68,29 @@ public class PasswordHashes {
     }
     
     public static void checkHashes(String word, MessageDigest md){
+        
+        //testing just the word
+        String tempHash = hash(word, md);
+        Vector<Hash> found = new Vector<Hash>();
+        for(Hash person: victims){
+            //get another hash if a Salt was used
+            if(!("".equals(person.getSalt()))){
+                tempHash = hash(word + person.getSalt(), md);
+            }            
+            
+            //if they are equal Declare it and remove it
+            if(person.getHash().equals(tempHash)){
+                System.out.println("Found password for " + person.getUser() + ". Password is " + word);
+                found.add(person);
+            }
+        }
+        if(!found.isEmpty()){
+            victims.removeAll(found);
+            found.removeAllElements();
+        }
+        
+        
+        //captol letters in first place
         
     }
     
@@ -87,7 +110,7 @@ public class PasswordHashes {
             hash = victimInput.next();
             
             //put into the victim vector
-            victims.add(new Hash(name, salt, hash));
+            victims.add(new Hash(name, salt, hash.trim()));
         }
     }
     
