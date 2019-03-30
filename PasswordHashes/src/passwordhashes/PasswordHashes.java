@@ -5,6 +5,7 @@
  */
 package passwordhashes;
 
+import com.sun.xml.internal.ws.util.StringUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.security.MessageDigest;
@@ -55,7 +56,7 @@ public class PasswordHashes {
                 nextWord = dictionary.next();
                 
                 //call function to do the actual hashing and checking
-                checkHashes(nextWord, md);
+                findHashes(nextWord, md);
                 count = count + 1; //keep track of hashes
                 if((count % 10000) == 0){
                     System.out.println("Hashes computed: " + count);
@@ -69,7 +70,7 @@ public class PasswordHashes {
     
     public static void checkHashes(String word, MessageDigest md){
         
-        //testing just the word
+        //testing the word
         String tempHash = hash(word, md);
         Vector<Hash> found = new Vector<Hash>();
         for(Hash person: victims){
@@ -88,10 +89,6 @@ public class PasswordHashes {
             victims.removeAll(found);
             found.removeAllElements();
         }
-        
-        
-        //captol letters in first place
-        
     }
     
     public static void inputHashes(String filename) throws FileNotFoundException{
@@ -124,6 +121,143 @@ public class PasswordHashes {
         }
         
         return stringBuffer.toString();
+    }
+
+    private static void findHashes(String word, MessageDigest md) {
+        checkHashes(word, md);
+        checkHashes(word.toLowerCase(), md);
+        checkHashes(word.toUpperCase(), md);
+        checkHashes(StringUtils.capitalize(word), md);
+        String temp = word.replace('a', '@');
+        temp = temp.replace('A', '@');
+        checkHashes(temp, md);
+        temp = word.replace('s', '5');
+        temp = temp.replace('S', '5');
+        checkHashes(temp, md);
+        temp = word.replace('s', '$');
+        temp = temp.replace('S', '$');
+        checkHashes(temp, md);
+        
+        
+        /*
+        for(int i = 0; i < 100; i++){
+            temp = word + i;
+            checkHashes(temp, md);
+            temp = i + word;
+            checkHashes(temp, md);
+        }*/
+        
+        checkHashes(word + "!", md);
+        checkHashes(word + "@", md);
+        checkHashes(word + "#", md);
+        checkHashes(word + "$", md);
+        checkHashes(word + "%", md);
+        checkHashes(word + "&", md);
+        checkHashes(word + "*", md);
+        checkHashes(word + "?", md);
+        
+        temp = word.replace('t', '7');
+        temp = temp.replace('T', '7');
+        checkHashes(temp, md);
+        
+        //did not work
+        temp = word.replace('z', 'S');
+        temp = temp.replace('Z', 'S');
+        checkHashes(temp, md);
+        temp = word.replace('s', 'Z');
+        temp = temp.replace('S', 'Z');
+        checkHashes(temp, md);
+        temp = word.replace('c', '>');
+        temp = temp.replace('C', '>');
+        checkHashes(temp, md);
+        temp = word.replace('c', '<');
+        temp = temp.replace('C', '<');
+        checkHashes(temp, md);
+        
+        //these did not work
+        temp = word.replace('l', '/');
+        temp = temp.replace('L', '/');
+        checkHashes(temp, md);
+        temp = word.replace('l', '\\');
+        temp = temp.replace('L', '\\');
+        checkHashes(temp, md);
+        
+        //these did not find anything
+        checkHashes("!" + word, md);
+        checkHashes("@" + word, md);
+        checkHashes("#" + word, md);
+        checkHashes("$" + word, md);
+        checkHashes("%" + word, md);
+        checkHashes("&" + word, md);
+        checkHashes("*" + word, md);
+        checkHashes("?" + word, md);
+        
+        //did not work
+        temp = word.replace('a', '4');
+        temp = temp.replace('A', '4');
+        checkHashes(temp, md);
+        
+        
+        //did not work
+        temp = word.replace('l', '1');
+        temp = temp.replace('L', '1'); //these are the number 1
+        checkHashes(temp, md);
+        
+        
+        //did not work
+        temp = word.replace('b', '6');
+        temp = temp.replace('B', '6');
+        checkHashes(temp, md);
+        
+        
+        //did nothing
+        temp = word.replace('u', 'v');
+        temp = temp.replace('U', 'V');
+        checkHashes(temp, md);
+        temp = word.replace('v', 'u');
+        temp = temp.replace('V', 'U');
+        checkHashes(temp, md);
+        
+        //this did not work
+        temp = word.replace('s', '2');
+        temp = temp.replace('S', '2');
+        checkHashes(temp, md);
+        
+        
+        //this did not work
+        temp = word.replace('l', '|');
+        temp = temp.replace('L', '|');
+        checkHashes(temp, md);
+        
+        //this did not work
+        temp = word.replace('o', '0');
+        temp = temp.replace('O', '0');
+        checkHashes(temp, md);
+        
+        //this did not work
+        temp = word.replace('i', '!');
+        temp = temp.replace('I', '!');
+        checkHashes(temp, md);
+        
+        //this did not work
+        temp = word.replace('e', 'e');
+        temp = temp.replace('E', '3');
+        checkHashes(temp, md);
+        
+        //this does not work
+        temp = word.replace('i', 'l'); //these are the letter L
+        temp = temp.replace('I', 'l');
+        checkHashes(temp, md);
+        
+        
+        //did not find anything
+        temp = word.replace('i', '|');
+        temp = temp.replace('I', '|');
+        checkHashes(temp, md);
+        
+        //does not find anything
+        temp = word.substring(0, word.length()-1) + word.substring(word.length()-1).toUpperCase();
+        checkHashes(temp, md);
     }
     
 }
