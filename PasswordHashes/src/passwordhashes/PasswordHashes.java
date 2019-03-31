@@ -57,7 +57,7 @@ public class PasswordHashes {
                 
                 //call function to do the actual hashing and checking
                 findHashes(nextWord, md);
-                count = count + 1; //keep track of hashes
+                count = count + 100; //keep track of hashes
                 if((count % 10000) == 0){
                     System.out.println("Hashes computed: " + count);
                 }
@@ -88,6 +88,45 @@ public class PasswordHashes {
         if(!found.isEmpty()){
             victims.removeAll(found);
             found.removeAllElements();
+        }
+        
+        //testing the word with prepended and appended numbers
+        for(int i = 0; i < 100; i++){
+            tempHash = hash(word + i, md);
+            for(Hash person: victims){
+                //get another hash if a Salt was used
+                if(!("".equals(person.getSalt()))){
+                    tempHash = hash(word + i + person.getSalt(), md);
+                }            
+
+                //if they are equal Declare it and remove it
+                if(person.getHash().equals(tempHash)){
+                    System.out.println("Found password for " + person.getUser() + ". Password is " + word + i);
+                    found.add(person);
+                }
+            }
+            if(!found.isEmpty()){
+                victims.removeAll(found);
+                found.removeAllElements();
+            }
+            
+            tempHash = hash(i + word, md);
+            for(Hash person: victims){
+                //get another hash if a Salt was used
+                if(!("".equals(person.getSalt()))){
+                    tempHash = hash(i + word + person.getSalt(), md);
+                }            
+
+                //if they are equal Declare it and remove it
+                if(person.getHash().equals(tempHash)){
+                    System.out.println("Found password for " + person.getUser() + ". Password is " + i + word);
+                    found.add(person);
+                }
+            }
+            if(!found.isEmpty()){
+                victims.removeAll(found);
+                found.removeAllElements();
+            }
         }
     }
     
